@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Mini Instagram</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #fafafa;
+}
+
+.container {
+    width: 400px;
+    margin: auto;
+}
+
+h1 {
+    text-align: center;
+}
+
+.upload-box, .post {
+    background: white;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+}
+
+input, button {
+    width: 100%;
+    margin-top: 8px;
+    padding: 8px;
+}
+
+.post img {
+    width: 100%;
+    border-radius: 5px;
+}
+
+.username {
+    font-weight: bold;
+}
+
+.actions span {
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.comment-section {
+    margin-top: 8px;
+}
+
+.comment-input {
+    width: 100%;
+    padding: 5px;
+}
+
+.emojis span {
+    cursor: pointer;
+    font-size: 18px;
+    margin-right: 5px;
+}
+
+.comment {
+    font-size: 14px;
+    margin-top: 4px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<h1>📸 Mini Instagram</h1>
+
+<div class="upload-box">
+    <input type="text" id="username" placeholder="Username">
+    <input type="text" id="caption" placeholder="Caption">
+    <input type="file" id="image">
+    <button onclick="addPost()">Post</button>
+</div>
+
+<div id="feed"></div>
+</div>
+
+<script>
+function addPost() {
+    let username = document.getElementById("username").value;
+    let caption = document.getElementById("caption").value;
+    let image = document.getElementById("image").files[0];
+
+    if (!username || !caption || !image) {
+        alert("Fill all fields");
+        return;
+    }
+
+    let imgURL = URL.createObjectURL(image);
+
+    let post = document.createElement("div");
+    post.className = "post";
+
+    post.innerHTML = `
+        <p class="username">${username}</p>
+        <img src="${imgURL}">
+        <p>${caption}</p>
+
+        <div class="actions">
+            <span onclick="likePost(this)">❤️ Like</span>
+        </div>
+
+        <div class="comment-section">
+            <input type="text" class="comment-input" placeholder="Add a comment...">
+
+            <div class="emojis">
+                <span onclick="addEmoji(this)">😀</span>
+                <span onclick="addEmoji(this)">😍</span>
+                <span onclick="addEmoji(this)">😂</span>
+                <span onclick="addEmoji(this)">❤️</span>
+                <span onclick="addEmoji(this)">🔥</span>
+                <span onclick="addEmoji(this)">👍</span>
+            </div>
+
+            <button onclick="addComment(this)">Post</button>
+            <div class="comment-list"></div>
+        </div>
+    `;
+
+    document.getElementById("feed").prepend(post);
+
+    document.getElementById("username").value = "";
+    document.getElementById("caption").value = "";
+    document.getElementById("image").value = "";
+}
+
+function likePost(el) {
+    el.innerText = "❤️ Liked";
+}
+
+function addEmoji(el) {
+    let post = el.closest(".post");
+    let input = post.querySelector(".comment-input");
+    input.value += el.innerText;
+}
+
+function addComment(btn) {
+    let post = btn.closest(".post");
+    let input = post.querySelector(".comment-input");
+    let list = post.querySelector(".comment-list");
+
+    if (input.value.trim() !== "") {
+        list.innerHTML += `<div class="comment">💬 ${input.value}</div>`;
+        input.value = "";
+    }
+}
+</script>
+
+</body>
+</html>
